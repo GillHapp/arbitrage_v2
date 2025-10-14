@@ -126,7 +126,7 @@ Balance of UNI: 0
 
 | Token         | Symbol | Decimals | Example Whale Address                        |
 | ------------- | ------ | -------- | -------------------------------------------- |
-| USD Coin      | USDC   | 6        | `0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8` |
+| USD Coin      | USDC   | 6        | `0x55fe002aeff02f77364de339a1292923a15844b8` |
 | Chainlink     | LINK   | 18       | `0xDC76CD25977E0a5Ae17155770273aD58648900D3` |
 | Uniswap       | UNI    | 18       | `0x47ac0Fb4F2D84898e4D9E7b4D61897762D01E9c6` |
 | Wrapped Ether | WETH   | 18       | `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2` |
