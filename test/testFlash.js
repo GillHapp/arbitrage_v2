@@ -1,0 +1,83 @@
+const { expect, assert } = require("chai");
+const { ethers, waffle } = require("hardhat");
+const { fundContract } = require("../utils/utilities");
+
+const { abi } = require("../artifacts/contracts/interfaces/IERC20.sol/IERC20.json");
+
+const provider = new ethers.providers.WebSocketProvider("wss://mainnet.infura.io/ws/v3/2de477c3b1b74816ae5475da6d289208");
+
+describe("FlashLoan Contract", () => {
+  let FLASHLOAN, BORROW_AMOUNT, FUND_AMOUNT, initialFundingHuman, txArbitrage;
+
+  const DECIMALS = 6; // USDC uses 6 decimals
+
+  // Large balance holder for USDC (updated whale to avoid balance issue)
+  const USDC_WHALE = "0x55fe002aeff02f77364de339a1292923a15844b8";
+  const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+  const UNI = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
+  const LINK = "0x514910771AF9Ca656af840dff83E8264EcF986CA";
+
+  const usdcInstance = new ethers.Contract(USDC, abi, provider);
+
+  beforeEach(async () => {
+    // Ensure that the WHALE has a balance
+    const whaleBalance = await usdcInstance.balanceOf(USDC_WHALE);
+    expect(whaleBalance).to.not.equal(0);
+
+    // Deploy smart contract
+    const FlashLoan = await ethers.getContractFactory("FlashLoan");
+    FLASHLOAN = await FlashLoan.deploy();
+    await FLASHLOAN.deployed();
+
+    const borrowAmountHuman = "1"; // 1 USDC
+    BORROW_AMOUNT = ethers.utils.parseUnits(borrowAmountHuman, DECIMALS);
+
+    initialFundingHuman = "1"; // 1 USDC for testing
+    FUND_AMOUNT = ethers.utils.parseUnits(initialFundingHuman, DECIMALS);
+
+    // Fund our Contract - FOR TESTING ONLY
+    await fundContract(
+      usdcInstance,
+      USDC_WHALE,
+      FLASHLOAN.address,
+      initialFundingHuman
+    );
+  });
+
+  describe("Arbitrage Execution", () => {
+    it("ensures the contract is funded", async () => {
+      const flashLoanBalance = await FLASHLOAN.getBalanceOfToken(USDC);
+
+      const flashSwapBalanceHuman = ethers.utils.formatUnits(
+        flashLoanBalance,
+        DECIMALS
+      );
+      expect(Number(flashSwapBalanceHuman)).to.equal(Number(initialFundingHuman));
+    });
+
+    it("executes the arbitrage", async () => {
+      txArbitrage = await FLASHLOAN.initateArbitrage(USDC, BORROW_AMOUNT);
+
+      assert(txArbitrage);
+
+      // Print balances
+      const contractBalanceUSDC = await FLASHLOAN.getBalanceOfToken(USDC);
+      const formattedBalUSDC = Number(
+        ethers.utils.formatUnits(contractBalanceUSDC, DECIMALS)
+      );
+      console.log("Balance of USDC:", formattedBalUSDC);
+
+      const contractBalanceLINK = await FLASHLOAN.getBalanceOfToken(LINK);
+      const formattedBalLINK = Number(
+        ethers.utils.formatUnits(contractBalanceLINK, 18) // LINK uses 18 decimals
+      );
+      console.log("Balance of LINK:", formattedBalLINK);
+
+      const contractBalanceUNI = await FLASHLOAN.getBalanceOfToken(UNI);
+      const formattedBalUNI = Number(
+        ethers.utils.formatUnits(contractBalanceUNI, 18) // UNI uses 18 decimals
+      );
+      console.log("Balance of UNI:", formattedBalUNI);
+    });
+  });
+});
