@@ -6,10 +6,10 @@ const uniswap = require("../dex/uniswap");
 const sushiswap = require("../dex/sushiswap");
 const { calculateProfitFromPrices } = require("../utils/calculateProfit");
 
-const provider = new ethers.providers.WebSocketProvider(process.env.INFURA_WS || "wss://mainnet.infura.io/ws/v3/YOUR_KEY");
+const provider = new ethers.providers.WebSocketProvider("wss://mainnet.infura.io/ws/v3/2de477c3b1b74816ae5475da6d289208");
 
-const USDC = process.env.USDC_ADDRESS || "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-const WETH = process.env.WETH_ADDRESS || "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
 async function simulateTwoSwapProfit({ lowDex, highDex, tokenIn, tokenOut, amountToken }) {
     // Simulate: buy tokenIn on lowDex with tokenOut then sell tokenIn on highDex to tokenOut.
@@ -31,9 +31,9 @@ async function startScanner() {
     console.log("🚀 Starting arbitrage scanner...");
 
     const amountToken = 1; // 1 WETH
-    const swapFee = parseFloat(process.env.SWAP_FEE || "0.003");
-    const gasCostUSD = parseFloat(process.env.GAS_COST_USD || "1.0");
-    const safetyMarginPercent = parseFloat(process.env.SAFETY_MARGIN_PERCENT || "0.5");
+    const swapFee = parseFloat("0.003");
+    const gasCostUSD = parseFloat("1.0");
+    const safetyMarginPercent = parseFloat("0.5");
 
     provider.on("block", async (blockNumber) => {
         try {
