@@ -1,10 +1,11 @@
 {
   "name": "flash",
   "version": "1.0.0",
-  "description": "",
+  "description": "This project demonstrates a **flash loan arbitrage** strategy using Hardhat’s **mainnet forking** feature. It simulates borrowing tokens, swapping between them to exploit price differences, and repaying the loan — all in **one atomic transaction**.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,22 @@
     "hardhat": "^2.26.2"
   },
   "dependencies": {
-    "dotenv": "^17.2.3"
-  }
+    "dotenv": "^17.2.3",
+    "ethers": "^5.7.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.1",
+    "nodemon": "^3.1.10"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GillHapp/arbitrage_v2.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GillHapp/arbitrage_v2/issues"
+  },
+  "homepage": "https://github.com/GillHapp/arbitrage_v2#readme"
 }
